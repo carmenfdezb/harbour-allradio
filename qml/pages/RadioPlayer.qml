@@ -16,7 +16,7 @@ Page {
 
         JSONListModel {
             id: jsonModel1
-            source: internal ? "../allradio-data/stations/"+country+".json" : "http://www.radio-browser.info/webservice/json/stations/bycountryexact/"+country
+            source: internal ? "../allradio-data/stations/"+country+".json" : "http://all.api.radio-browser.info/json/stations/bycountryexact/"+country
             query: internal ? "$."+country+".channel[*]" : "$[?(@.lastcheckok>0)]"
             sortby: internal ? "title" : sortnew ? "lastchangetime" : ""
             filterby: filter
@@ -93,12 +93,12 @@ Page {
                 Image {
                    id: speakerIcon
                    height: parent.height / 2
-                   visible: streaming && currentid == model.id ? true : false
+                   visible: streaming && currentid == model.stationuuid ? true : false
                    fillMode: Image.PreserveAspectFit
                    anchors.verticalCenter: parent.verticalCenter
                    anchors.left: parent.left
                    anchors.leftMargin: Theme.paddingMedium
-                   source: streaming && currentid == model.id ? "image://theme/icon-m-speaker?" + Theme.highlightColor : ""
+                   source: streaming && currentid == model.stationuuid ? "image://theme/icon-m-speaker?" + Theme.highlightColor : ""
                 }
 
                 Column {
@@ -130,7 +130,7 @@ Page {
 
                 Label {
                     id: codlabel
-                     text: internal ? "" : codec == "UNKNOWN" ? "" : codec
+                     text: internal ? "" : codec == "UNKNOWN" ? "HLS" : codec
                      color: highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
                      anchors.verticalCenter: parent.verticalCenter
                      anchors.right: bit.left
@@ -141,7 +141,7 @@ Page {
 
                 Label {
                      id: bit
-                     text: internal ? "" : bitrate == 0 && codec == "UNKNOWN" ? "UNKNOWN" : bitrate == 0 ? "" : bitrate
+                     text: internal ? "" : bitrate == 0 ? "" : bitrate
                      visible: !internal
                      color: highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
                      anchors.right: parent.right
@@ -152,7 +152,7 @@ Page {
                  }
 
                 onClicked: {
-                    internal ? ps(source) : cps(model.id)
+                    internal ? ps(source) : cps(model.stationuuid)
                     radioStation = internal ? title : name
                     if (favorites && icon.search(".png")>0) picon = icon.toLowerCase(); // The old save in database
                     else if (favorites) picon = "../allradio-data/images/"+icon+".png"; else picon = "../allradio-data/images/"+country.toLowerCase()+".png"
@@ -166,7 +166,7 @@ Page {
                         visible: true
                         text: qsTr("Listen")
                         onClicked: {
-                            internal ? ps(source) : cps(model.id)
+                            internal ? ps(source) : cps(model.stationuuid)
                             radioStation = internal ? title : name
                             if (favorites && icon.search(".png")>0) picon = icon.toLowerCase(); // The old save in database
                             else if (favorites) picon = "../allradio-data/images/"+icon+".png"; else picon = "../allradio-data/images/"+country.toLowerCase()+".png"
@@ -177,7 +177,7 @@ Page {
                         id:madd
                         visible: !favorites
                         text: qsTr("Add to favorites")  // id, lastchangetime, source, title, site, tags, icon, codec, bitrate
-                        onClicked: addDb(id,lastchangetime,url,name,homepage,tags,country,codec,bitrate)
+                        onClicked: addDb(stationuuid,lastchangetime,url,name,homepage,tags,country,codec,bitrate)
                         }
                     MenuItem {
                         id:mdelete
@@ -207,7 +207,7 @@ Page {
             ViewPlaceholder {
                 enabled: listView.count === 0 //|| jsonModel1.jsonready
                 text: jsonModel1.ready ? qsTr("No radio stations!?") : qsTr("Community Browser Radio")
-                hintText: jsonModel1.ready ? qsTr("") : qsTr("Loading radio stations...")
+                hintText: jsonModel1.ready ? qsTr("") : qsTr("Loading radio stations…")
             }
     }
     PlayerPanel { id:playerPanel;open: searching ? false : true}

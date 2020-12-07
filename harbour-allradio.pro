@@ -293,8 +293,10 @@ TRANSLATIONS += translations/harbour-allradio-it.ts
 TRANSLATIONS += translations/harbour-allradio-nl.ts
 TRANSLATIONS += translations/harbour-allradio-es.ts
 TRANSLATIONS += translations/harbour-allradio-ru.ts
+TRANSLATIONS += translations/harbour-allradio-tr.ts
 
 DISTFILES += \
+    qml/pages/CountryNameModel.qml \
     qml/timepicker.png \
     qml/pages/Favorites.qml \
     qml/allradio-data/images/albania.png \
